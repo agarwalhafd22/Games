@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/le"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/hangman_background2"
+    tools:context=".hangmanGame">
+
+    <ImageView
+        android:id="@+id/start"
+        android:layout_width="200dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/guessLetter"
+        app:srcCompat="@drawable/start" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="8dp"
+        android:text="00:00"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/wordShow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/wordShow"
+        android:layout_width="365dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="24dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guessLetter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer"
+        app:layout_constraintVertical_bias="0.062" />
+
+    <EditText
+        android:id="@+id/guessLetter"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:hint="Guess a letter"
+        android:inputType="textPersonName"
+        android:maxLength="1"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/start"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/wordShow" />
+
+    <ImageView
+        android:id="@+id/enterLetter"
+        android:layout_width="186dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/guessLetter"
+        app:srcCompat="@drawable/guess" />
+
+    <ImageView
+        android:id="@+id/standPole"
+        android:layout_width="200dp"
+        android:layout_height="293dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/start"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/start"
+        app:srcCompat="@drawable/glowstick" />
+
+    <ImageView
+        android:id="@+id/standHead"
+        android:layout_width="250dp"
+        android:layout_height="153dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toTopOf="@+id/start"
+        app:srcCompat="@drawable/glowsticktitled" />
+
+    <ImageView
+        android:id="@+id/standBase"
+        android:layout_width="325dp"
+        android:layout_height="203dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/head"
+        app:srcCompat="@drawable/glowsticktitled" />
+
+    <ImageView
+        android:id="@+id/youwon"
+        android:layout_width="271dp"
+        android:layout_height="205dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/body"
+        app:srcCompat="@drawable/youwon" />
+
+    <ImageView
+        android:id="@+id/head"
+        android:layout_width="82dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="60dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.455"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/enterLetter"
+        app:srcCompat="@drawable/head" />
+
+    <ImageView
+        android:id="@+id/body"
+        android:layout_width="131dp"
+        android:layout_height="168dp"
+        android:layout_marginTop="4dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/rope"
+        app:srcCompat="@drawable/yellowstick" />
+
+    <ImageView
+        android:id="@+id/rope"
+        android:layout_width="35dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="176dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/enterLetter"
+        app:srcCompat="@drawable/yellowstick" />
+
+    <ImageView
+        android:id="@+id/righthand"
+        android:layout_width="37dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/standHead"
+        app:srcCompat="@drawable/yellowstickslanted" />
+
+    <ImageView
+        android:id="@+id/rightleg"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="156dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/righthand"
+        app:srcCompat="@drawable/yellowstickslanted" />
+
+    <ImageView
+        android:id="@+id/lefthand"
+        android:layout_width="37dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.417"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/standHead"
+        app:srcCompat="@drawable/yellowstickslanted2" />
+
+    <ImageView
+        android:id="@+id/leftleg"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.404"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/lefthand"
+        app:srcCompat="@drawable/yellowstickslanted2" />
+
+    <ImageView
+        android:id="@+id/youlost"
+        android:layout_width="271dp"
+        android:layout_height="205dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/body"
+        app:srcCompat="@drawable/youlost" />
+
+    <ImageView
+        android:id="@+id/reset2"
+        android:layout_width="200dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/guessLetter"
+        app:srcCompat="@drawable/reset2" />
+
+    <TextView
+        android:id="@+id/hintTextView"
+        android:layout_width="373dp"
+        android:layout_height="52dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toBottomOf="@+id/body" />
+
+    <TextView
+        android:id="@+id/letters"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginBottom="32dp"
+        android:text="Letters entered:"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/wordShow"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="0.411"
+        app:layout_constraintStart_toStartOf="@+id/wordShow" />
+
+    <TextView
+        android:id="@+id/lettersEntered"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordShow"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/wordShow" />
+
+    <TextView
+        android:id="@+id/hintHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFEB3B"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guessLetter"
+        app:layout_constraintEnd_toEndOf="@+id/wordShow"
+        app:layout_constraintStart_toStartOf="@+id/wordShow"
+        app:layout_constraintTop_toTopOf="@+id/wordShow"
+        app:layout_constraintVertical_bias="0.342" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

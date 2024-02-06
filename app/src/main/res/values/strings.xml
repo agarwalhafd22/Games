@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Games</string>
+    <string name="button_flames">Flames</string>
+    <string name="button_tictactoe">TicTacToe</string>
+    <string name="button_hangman">Hangman</string>
+    <string name="instructionText"> To play the game, one player will enter a single word. Set the timer for how long the other player will have to guess the entered word. When the timer runs down, game is over. The player that has to guess the word will get six wrong guesses to guess the word, on the seventh wrong guess, the hangman figure will be drawn, indicating the game is over</string>
+</resources>

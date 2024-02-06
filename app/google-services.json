@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "880065477269",
+    "project_id": "games-c35e2",
+    "storage_bucket": "games-c35e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880065477269:android:6e22d400737b171f62799c",
+        "android_client_info": {
+          "package_name": "com.example.games"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB90lHhKSEzIxSdyve8d_jUOtmvbwlVD00"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
