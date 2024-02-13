@@ -17,12 +17,13 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.graphics.Color;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class HangmanGameOnline extends AppCompatActivity {
 
 
     int activeUser=1;
-
 
 
     private ImageView start, reset, enterLetter, youwon, youlost, rope, lefthand, leftleg, righthand, rightleg, head, body;
@@ -369,6 +370,30 @@ public class HangmanGameOnline extends AppCompatActivity {
             }
         });
     }
+
+//    public void removeCode()
+//    {
+//        if(isCodeMaker)
+//        {
+//            FirebaseDatabase.getInstance().getReference().child("codes").child(keyValue).removeValue();
+//        }
+//    }
+
+//    @Override
+//    public void onBackPressed()
+//    {
+//        removeCode();
+//        if(isCodeMaker)
+//        {
+//            FirebaseDatabase.getInstance().getReference().child("codes").child(Code).removeValue();
+//        }
+//        System.exit(0);
+//    }
+
+//    public void updateDatabase()
+//    {
+//        FirebaseDatabase.getInstance().getReference().child("codes").child(Code).push().setValue()
+//    }
 
     private void hideKeyboard()
     {

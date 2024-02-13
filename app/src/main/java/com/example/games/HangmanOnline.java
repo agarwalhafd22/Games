@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class HangmanOnline extends AppCompatActivity {
 
@@ -89,6 +91,8 @@ public class HangmanOnline extends AppCompatActivity {
                 wordHangman=wordHangman.trim();
                 String timeOne=time1.getText().toString();
                 String timeTwo=time2.getText().toString();
+                Intent inTent = getIntent();
+                String Code = inTent.getStringExtra("Code");
                 if(wordHangman.isEmpty()||timeOne.isEmpty()||timeTwo.isEmpty()||hintEditText.getVisibility()==View.VISIBLE&&hintEditText.getText().toString().isEmpty())
                     Toast.makeText(HangmanOnline.this, "Enter all fields", Toast.LENGTH_SHORT).show();
                 else if(Integer.parseInt(timeTwo)>59)
@@ -98,6 +102,8 @@ public class HangmanOnline extends AppCompatActivity {
                     intent.putExtra("WORD", wordHangman);
                     intent.putExtra("TIME1", timeOne);
                     intent.putExtra("TIME2", timeTwo);
+                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).child("status").setValue("started");
+                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).child("word").setValue(wordHangman);
                     if(hintEditText.getVisibility()==View.VISIBLE) {
                         intent.putExtra("HINT", hintEditText.getText().toString());
                         intent.putExtra("HINT BOOL", "1");
