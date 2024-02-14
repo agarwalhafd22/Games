@@ -1,5 +1,6 @@
 package com.example.games;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -17,7 +18,10 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.graphics.Color;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class HangmanGameOnline extends AppCompatActivity {
@@ -50,16 +54,17 @@ public class HangmanGameOnline extends AppCompatActivity {
         reset=findViewById(R.id.reset2);
         hintHint=findViewById(R.id.hintHint);
 
-        Intent intent = getIntent();
 
-        if(intent.getStringExtra("HINT BOOL").equals("1"))
-        {
-            hintHint.setText("HINT PROVIDED");
-        }
-        else
-        {
-            hintHint.setText("HINT NOT PROVIDED");
-        }
+        String word=fbValue("word");
+        String time1=fbValue("time1");
+        String time2=fbValue("time2");
+        String hint=fbValue("hint");
+//        if(hint.equals("null"))
+//            hintHint.setText("HINT NOT PROVIDED");
+//        else
+//            hintHint.setText("HINT PROVIDED");
+
+
 
         rope=findViewById(R.id.rope);
         head=findViewById(R.id.head);
@@ -84,10 +89,8 @@ public class HangmanGameOnline extends AppCompatActivity {
         enterLetter.setEnabled(false);
         reset.setEnabled(false);
 
-        String word = intent.getStringExtra("WORD");
 
-
-        char wordArray[]=word.toCharArray();
+        char[] wordArray = word.toCharArray();
         for(int i=0;i<wordArray.length;i++)
         {
             if(wordArray[i]=='a'||wordArray[i]=='e'||wordArray[i]=='i'||wordArray[i]=='o'||wordArray[i]=='u')
@@ -101,20 +104,18 @@ public class HangmanGameOnline extends AppCompatActivity {
         }
         wordShow.setText(result);
 
-        String time1 = intent.getStringExtra("TIME1");
-        String time2 = intent.getStringExtra("TIME2");
         String timeFinal=time1+":"+time2;
         timer.setText(timeFinal);
 
         start.setOnClickListener(new View.OnClickListener() {               //starting the game
             @Override
             public void onClick(View v) {
-                startTimer();
+                startTimer(time1, time2, word, hint);
             }
         });
     }
 
-    private void startTimer()
+    private void startTimer(String time1, String time2, String word, String hint)
     {
 
         wordShow=findViewById(R.id.wordShow);
@@ -126,9 +127,6 @@ public class HangmanGameOnline extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();                                // Stop the previous timer if it exists
         }
-        Intent intent = getIntent();
-        String time1 = intent.getStringExtra("TIME1");
-        String time2 = intent.getStringExtra("TIME2");
 
 
         int minutes = Integer.parseInt(time1);
@@ -165,7 +163,6 @@ public class HangmanGameOnline extends AppCompatActivity {
                 youlost = findViewById(R.id.youlost);
                 youlost.setVisibility(View.VISIBLE);
                 char resultArray[]=result.toCharArray();
-                String word = intent.getStringExtra("WORD");
                 int changeColour[]=new int[word.length()];
                 int s=0;
                 int color = Color.RED;
@@ -204,7 +201,6 @@ public class HangmanGameOnline extends AppCompatActivity {
         guessLetter=findViewById(R.id.guessLetter);
         guessLetter.setVisibility(View.VISIBLE);
         char resultArray[]=result.toCharArray();
-        String word = intent.getStringExtra("WORD");
         enterLetter=findViewById(R.id.enterLetter);
         enterLetter.setVisibility(View.VISIBLE);
         enterLetter.setEnabled(true);
@@ -265,11 +261,11 @@ public class HangmanGameOnline extends AppCompatActivity {
                             rightleg = findViewById(R.id.rightleg);
                             rightleg.setVisibility(View.VISIBLE);
                             hintTextView=findViewById(R.id.hintTextView);
-                            if(intent.getStringExtra("HINT BOOL").equals("1"))
+                            if(!hint.equals("null"))
                             {
                                 hideKeyboard();
                                 hintTextView.setVisibility(View.VISIBLE);
-                                hintTextView.setText("Hint: "+intent.getStringExtra("HINT"));
+                                hintTextView.setText("Hint: "+hint);
                             }
                             f++;
                         }
@@ -402,6 +398,29 @@ public class HangmanGameOnline extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public String fbValue(String path)
+    {
+        Intent intent = getIntent();
+        String Code = intent.getStringExtra("Code");
+        final String[] rtString = {null};
+        FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren())
+                {
+                    if(snapshot.getKey().equals(Code))
+                    {
+                        rtString[0]=snapshot.child(path).getValue().toString();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        return rtString[0];
     }
 }
 

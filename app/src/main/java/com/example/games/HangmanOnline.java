@@ -42,6 +42,10 @@ public class HangmanOnline extends AppCompatActivity {
         closeTextView.setVisibility(View.INVISIBLE);
         gameInstructions.setVisibility(View.INVISIBLE);
 
+        Intent inTent = getIntent();
+        String Code = inTent.getStringExtra("Code");
+
+
         howToPlayTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,29 +95,24 @@ public class HangmanOnline extends AppCompatActivity {
                 wordHangman=wordHangman.trim();
                 String timeOne=time1.getText().toString();
                 String timeTwo=time2.getText().toString();
-                Intent inTent = getIntent();
-                String Code = inTent.getStringExtra("Code");
+                String hint="null";
+
                 if(wordHangman.isEmpty()||timeOne.isEmpty()||timeTwo.isEmpty()||hintEditText.getVisibility()==View.VISIBLE&&hintEditText.getText().toString().isEmpty())
                     Toast.makeText(HangmanOnline.this, "Enter all fields", Toast.LENGTH_SHORT).show();
                 else if(Integer.parseInt(timeTwo)>59)
                     Toast.makeText(HangmanOnline.this, "Enter correct duration", Toast.LENGTH_SHORT).show();
                 else {
-                    Intent intent = new Intent(HangmanOnline.this, HangmanGameOnline.class);
-                    intent.putExtra("WORD", wordHangman);
-                    intent.putExtra("TIME1", timeOne);
-                    intent.putExtra("TIME2", timeTwo);
-                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).child("status").setValue("started");
-                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).child("word").setValue(wordHangman);
                     if(hintEditText.getVisibility()==View.VISIBLE) {
-                        intent.putExtra("HINT", hintEditText.getText().toString());
-                        intent.putExtra("HINT BOOL", "1");
+                        hint=hintEditText.getText().toString();
                     }
-                    else
-                        intent.putExtra("HINT BOOL", "0");
+                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint);
+                    FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                     word.setText(null);
                     time1.setText(null);
                     time2.setText(null);
                     hintEditText.setText(null);
+                    Intent intent = new Intent(HangmanOnline.this, HangmanGameOnline.class);
+                    intent.putExtra("Code", Code);
                     startActivity(intent);
                 }
             }

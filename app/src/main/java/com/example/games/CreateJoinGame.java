@@ -10,32 +10,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
-import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
-import java.net.Inet4Address;
 
 public class CreateJoinGame extends AppCompatActivity {
 
-
     private EditText code;
     private Button create, join;
-
     private CardView cardView, cardView2;
+    String Code=null;
 
-    boolean isCodeMaker=true;
-    boolean codeFound=false;
-    boolean checkTemp=true;
-    String Code="null";
-    String keyValue="null";
-    String location="null";
-
+    int flag1=0;
+    int flag2=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,31 +39,29 @@ public class CreateJoinGame extends AppCompatActivity {
         cardView2 = findViewById(R.id.cardView2);
         cardView2.setVisibility(View.INVISIBLE);
 
-
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Code = "null";
-                Code = code.getText().toString();
-                if (!Code.equals("null") && !Code.isEmpty()) {
-                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).addValueEventListener(new ValueEventListener() {
+                Code = code.getText().toString().trim();
+                if (!Code.isEmpty()) {
+                    FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()&&dataSnapshot.getValue(String.class).equals(Code))
-                            {
+                            for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                if (snapshot.getKey().equals(Code)) {
                                     Toast.makeText(CreateJoinGame.this, "Code already exists!", Toast.LENGTH_SHORT).show();
+                                    flag1=1;
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                    HangmanDB hangmanDB = new HangmanDB("null","waiting");
-                                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).setValue(hangmanDB);
-                                    accepted(Code);
+                            if(flag1!=1) {
+                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", "null");
+                                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
+                                accepted(Code);
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
                         }
                     });
 
@@ -84,29 +71,35 @@ public class CreateJoinGame extends AppCompatActivity {
             }
         });
 
+
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Code = "null";
                 Code = code.getText().toString();
-                if (!Code.equals("null") && !Code.isEmpty()) {
-                    FirebaseDatabase.getInstance().getReference("HangmanDB").child(Code).addValueEventListener(new ValueEventListener() {
+                if (!Code.isEmpty()) {
+                    FirebaseDatabase.getInstance().getReference().child("HangmanDB").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()&&dataSnapshot.getValue(String.class).equals(Code)) {
-                                String value = dataSnapshot.child("status").getValue(String.class);
-                                if (value.equals("waiting"))
+                            for(DataSnapshot snapshot: dataSnapshot.getChildren())
+                            {
+                                if(snapshot.getKey().equals(Code))
                                 {
-                                    cardView.setVisibility(View.INVISIBLE);
-                                    cardView2.setVisibility(View.VISIBLE);
-                                } else if(value.equals("started")){
-                                   Intent intent=new Intent(CreateJoinGame.this, HangmanGameOnline.class);
-                                   startActivity(intent);
+                                    flag2=1;
+                                    if(snapshot.child("status").getValue().toString().equals("waiting"))
+                                    {
+                                        cardView.setVisibility(View.INVISIBLE);
+                                        cardView2.setVisibility(View.VISIBLE);
+                                    }
+                                    else
+                                    {
+                                        Intent intent =new Intent(CreateJoinGame.this, HangmanGameOnline.class);
+                                        startActivity(intent);
+                                    }
                                 }
                             }
-                            else
+                            if(flag2!=1)
                             {
-                                Toast.makeText(CreateJoinGame.this, "Enter a Valid Code!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateJoinGame.this, "Enter a valid Code!", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -122,7 +115,6 @@ public class CreateJoinGame extends AppCompatActivity {
             }
         });
     }
-
 
     public void accepted(String Code)
     {
