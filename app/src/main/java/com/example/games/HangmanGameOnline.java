@@ -10,6 +10,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.inputmethod.InputMethodManager;
@@ -23,6 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import android.os.Handler;
+import android.os.Looper;
+
+
 
 public class HangmanGameOnline extends AppCompatActivity {
 
@@ -30,11 +35,16 @@ public class HangmanGameOnline extends AppCompatActivity {
     int activeUser=1;
 
 
-    private ImageView start, reset, enterLetter, youwon, youlost, rope, lefthand, leftleg, righthand, rightleg, head, body;
+    private ImageView start, reset, enterLetter, youwon, youlost, rope, lefthand, leftleg, righthand, rightleg, head, body, standPole, standHead, standBase;
+
+    private ProgressBar progressBar;
+
     private TextView timer, wordShow, hintTextView, letters, lettersEntered, hintHint;
     private EditText guessLetter;
 
     String result="";
+
+    String word="harsh", time1="00", time2="30", hint="null";
     CountDownTimer countDownTimer;
 
     int f=0;
@@ -43,76 +53,130 @@ public class HangmanGameOnline extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hangman_game);
+        setContentView(R.layout.activity_hangman_game_online);
 
-        start=findViewById(R.id.start);
+        progressBar=findViewById(R.id.progressBar);
+        progressBar.setVisibility((View.VISIBLE));
+
         timer=findViewById(R.id.timer);
-        wordShow=findViewById(R.id.wordShow);
-        youwon=findViewById(R.id.youwon);
-        youlost=findViewById(R.id.youlost);
-        enterLetter=findViewById(R.id.enterLetter);
-        reset=findViewById(R.id.reset2);
+        start=findViewById(R.id.start);
+        standPole=findViewById(R.id.standPole);
+        standHead=findViewById(R.id.standHead);
+        standBase=findViewById(R.id.standBase);
         hintHint=findViewById(R.id.hintHint);
 
-
-        String word=fbValue("word");
-        String time1=fbValue("time1");
-        String time2=fbValue("time2");
-        String hint=fbValue("hint");
-//        if(hint.equals("null"))
-//            hintHint.setText("HINT NOT PROVIDED");
-//        else
-//            hintHint.setText("HINT PROVIDED");
+        timer.setVisibility(View.INVISIBLE);
+        start.setVisibility(View.INVISIBLE);
+        standPole.setVisibility(View.INVISIBLE);
+        standHead.setVisibility(View.INVISIBLE);
+        standBase.setVisibility(View.INVISIBLE);
+        hintHint.setVisibility(View.INVISIBLE);
 
 
+        Intent intent = getIntent();
+        String Code = intent.getStringExtra("Code");
 
-        rope=findViewById(R.id.rope);
-        head=findViewById(R.id.head);
-        lefthand=findViewById(R.id.lefthand);
-        leftleg=findViewById(R.id.leftleg);
-        righthand=findViewById(R.id.righthand);
-        rightleg=findViewById(R.id.rightleg);
-        body=findViewById(R.id.body);
-
-        wordShow.setVisibility(View.INVISIBLE);
-        youwon.setVisibility(View.INVISIBLE);
-        youlost.setVisibility(View.INVISIBLE);
-        reset.setVisibility(View.INVISIBLE);
-        rope.setVisibility(View.INVISIBLE);
-        head.setVisibility(View.INVISIBLE);
-        righthand.setVisibility(View.INVISIBLE);
-        rightleg.setVisibility(View.INVISIBLE);
-        lefthand.setVisibility(View.INVISIBLE);
-        leftleg.setVisibility(View.INVISIBLE);
-        body.setVisibility(View.INVISIBLE);
-
-        enterLetter.setEnabled(false);
-        reset.setEnabled(false);
-
-
-        char[] wordArray = word.toCharArray();
-        for(int i=0;i<wordArray.length;i++)
-        {
-            if(wordArray[i]=='a'||wordArray[i]=='e'||wordArray[i]=='i'||wordArray[i]=='o'||wordArray[i]=='u')
-                result=result+wordArray[i]+" ";
-            else if(wordArray[i]==' ')
-            {
-                result=result+"/"+" ";
-            }
-            else
-                result=result+"_ ";
-        }
-        wordShow.setText(result);
-
-        String timeFinal=time1+":"+time2;
-        timer.setText(timeFinal);
-
-        start.setOnClickListener(new View.OnClickListener() {               //starting the game
+        FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                startTimer(time1, time2, word, hint);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.getKey().equals(Code)) {
+                        word = snapshot.child("word").getValue().toString();
+                        time1 = snapshot.child("time1").getValue().toString();
+                        time2 = snapshot.child("time2").getValue().toString();
+                        hint = snapshot.child("hint").getValue().toString();
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressBar=findViewById(R.id.progressBar);
+                start=findViewById(R.id.start);
+                timer=findViewById(R.id.timer);
+                standPole=findViewById(R.id.standPole);
+                standHead=findViewById(R.id.standHead);
+                standBase=findViewById(R.id.standBase);
+                wordShow=findViewById(R.id.wordShow);
+                youwon=findViewById(R.id.youwon);
+                youlost=findViewById(R.id.youlost);
+                enterLetter=findViewById(R.id.enterLetter);
+                reset=findViewById(R.id.reset2);
+                hintHint=findViewById(R.id.hintHint);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                timer.setVisibility(View.VISIBLE);
+                start.setVisibility(View.VISIBLE);
+                standPole.setVisibility(View.VISIBLE);
+                standHead.setVisibility(View.VISIBLE);
+                standBase.setVisibility(View.VISIBLE);
+                hintHint.setVisibility(View.VISIBLE);
+
+                if(hint.equals("null"))
+                    hintHint.setText("HINT NOT PROVIDED");
+                else
+                    hintHint.setText("HINT PROVIDED");
+
+
+                rope=findViewById(R.id.rope);
+                head=findViewById(R.id.head);
+                lefthand=findViewById(R.id.lefthand);
+                leftleg=findViewById(R.id.leftleg);
+                righthand=findViewById(R.id.righthand);
+                rightleg=findViewById(R.id.rightleg);
+                body=findViewById(R.id.body);
+
+                wordShow.setVisibility(View.INVISIBLE);
+                youwon.setVisibility(View.INVISIBLE);
+                youlost.setVisibility(View.INVISIBLE);
+                reset.setVisibility(View.INVISIBLE);
+                rope.setVisibility(View.INVISIBLE);
+                head.setVisibility(View.INVISIBLE);
+                righthand.setVisibility(View.INVISIBLE);
+                rightleg.setVisibility(View.INVISIBLE);
+                lefthand.setVisibility(View.INVISIBLE);
+                leftleg.setVisibility(View.INVISIBLE);
+                body.setVisibility(View.INVISIBLE);
+
+                enterLetter.setEnabled(false);
+                reset.setEnabled(false);
+
+
+                char[] wordArray = word.toCharArray();
+                for(int i=0;i<wordArray.length;i++)
+                {
+                    if(wordArray[i]=='a'||wordArray[i]=='e'||wordArray[i]=='i'||wordArray[i]=='o'||wordArray[i]=='u')
+                        result=result+wordArray[i]+" ";
+                    else if(wordArray[i]==' ')
+                    {
+                        result=result+"/"+" ";
+                    }
+                    else
+                        result=result+"_ ";
+                }
+                wordShow.setText(result);
+
+                String timeFinal=time1+":"+time2;
+                timer.setText(timeFinal);
+
+                start.setOnClickListener(new View.OnClickListener() {               //starting the game
+                    @Override
+                    public void onClick(View v) {
+                        startTimer(time1, time2, word, hint);
+                    }
+                });
+
+            }
+        }, 2000);
+
+
+
     }
 
     private void startTimer(String time1, String time2, String word, String hint)
@@ -400,27 +464,5 @@ public class HangmanGameOnline extends AppCompatActivity {
         }
     }
 
-    public String fbValue(String path)
-    {
-        Intent intent = getIntent();
-        String Code = intent.getStringExtra("Code");
-        final String[] rtString = {null};
-        FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot: dataSnapshot.getChildren())
-                {
-                    if(snapshot.getKey().equals(Code))
-                    {
-                        rtString[0]=snapshot.child(path).getValue().toString();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-        return rtString[0];
-    }
 }
 

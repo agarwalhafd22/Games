@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -42,6 +44,7 @@ public class CreateJoinGame extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 Code = code.getText().toString().trim();
                 if (!Code.isEmpty()) {
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -75,26 +78,34 @@ public class CreateJoinGame extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 Code = code.getText().toString();
                 if (!Code.isEmpty()) {
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            flag2=0;
                             for(DataSnapshot snapshot: dataSnapshot.getChildren())
                             {
                                 if(snapshot.getKey().equals(Code))
                                 {
                                     flag2=1;
-                                    if(snapshot.child("status").getValue().toString().equals("waiting"))
+                                    if(snapshot.child("playerCount").getValue().toString().equals("2"))
                                     {
-                                        cardView.setVisibility(View.INVISIBLE);
-                                        cardView2.setVisibility(View.VISIBLE);
+                                        Toast.makeText(CreateJoinGame.this, "Max players reached!", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
-                                    else
-                                    {
-                                        Intent intent =new Intent(CreateJoinGame.this, HangmanGameOnline.class);
-                                        startActivity(intent);
+                                    else {
+                                        FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("playerCount").setValue(2);
+                                        if (snapshot.child("status").getValue().toString().equals("waiting")) {
+                                            cardView.setVisibility(View.INVISIBLE);
+                                            cardView2.setVisibility(View.VISIBLE);
+                                        } else {
+                                            Intent intent = new Intent(CreateJoinGame.this, HangmanGameOnline.class);
+                                            startActivity(intent);
+                                        }
                                     }
+                                    break;
                                 }
                             }
                             if(flag2!=1)
@@ -121,5 +132,13 @@ public class CreateJoinGame extends AppCompatActivity {
         Intent intent =new Intent(CreateJoinGame.this, HangmanOnline.class);
         intent.putExtra("Code", Code);
         startActivity(intent);
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
