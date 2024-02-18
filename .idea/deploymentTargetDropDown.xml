@@ -31,8 +31,8 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\HARSH\.android\avd\Medium_Phone_API_28.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="RZ8MA2TC7PK" />
                 </Key>
               </deviceKey>
             </Target>

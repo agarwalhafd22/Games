@@ -2,7 +2,7 @@ package com.example.games;
 
 public class HangmanDB
 {
-    String word, status, time1, time2, hint, lettersEnteredAlready, result;
+    String word, status, time1, time2, hint, lettersEnteredAlready, result, hangmanFig;
     int playerCount;
 
     public String getResult() {
@@ -13,7 +13,7 @@ public class HangmanDB
         this.result = result;
     }
 
-    public HangmanDB(String word, String status, int playerCount, String time1, String time2, String hint, String lettersEnteredAlready, String result) {
+    public HangmanDB(String word, String status, int playerCount, String time1, String time2, String hint, String lettersEnteredAlready, String result, String hangmanFig) {
         this.word = word;
         this.status = status;
         this.playerCount=playerCount;
@@ -22,6 +22,7 @@ public class HangmanDB
         this.hint=hint;
         this.lettersEnteredAlready=lettersEnteredAlready;
         this.result=result;
+        this.hangmanFig=hangmanFig;
     }
 
     public String getWord() {
@@ -66,6 +67,14 @@ public class HangmanDB
 
     public String getStatus() {
         return status;
+    }
+
+    public String getHangmanFig() {
+        return hangmanFig;
+    }
+
+    public void setHangmanFig(String hangmanFig) {
+        this.hangmanFig = hangmanFig;
     }
 
     public void setStatus(String status) {

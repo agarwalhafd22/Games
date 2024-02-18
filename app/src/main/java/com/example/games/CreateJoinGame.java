@@ -58,7 +58,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                 }
                             }
                             if(flag1!=1) {
-                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null);
+                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null, "-1");
                                 FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                                 accepted(Code);
                             }

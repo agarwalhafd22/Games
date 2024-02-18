@@ -226,7 +226,9 @@ public class HangmanGameOnline extends AppCompatActivity {
                                 reset = findViewById(R.id.reset2);
                                 reset.setVisibility(View.VISIBLE);
                                 reset.setEnabled(true);
-                                countDownTimer.cancel();
+                                if (countDownTimer != null) {
+                                    countDownTimer.cancel();                                // Stop the previous timer if it exists
+                                }
                             }
                             else if(dataSnapshot.getValue().toString().equals("Won"))
                             {
@@ -245,7 +247,9 @@ public class HangmanGameOnline extends AppCompatActivity {
                                 youwon.setVisibility(View.VISIBLE);
                                 reset.setVisibility(View.VISIBLE);
                                 reset.setEnabled(true);
-                                countDownTimer.cancel();
+                                if (countDownTimer != null) {
+                                    countDownTimer.cancel();                                // Stop the previous timer if it exists
+                                }
                             }
                     }
                     @Override
@@ -272,6 +276,53 @@ public class HangmanGameOnline extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         lettersEntered.setText(dataSnapshot.getValue().toString());
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                start.setOnClickListener(new View.OnClickListener() {               //starting the game
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").setValue("guessing");
+                    }
+                });
+
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue().toString().equals("0"))
+                        {
+                            rope = findViewById(R.id.rope);
+                            rope.setVisibility(View.VISIBLE);
+                        }
+                        else if(dataSnapshot.getValue().toString().equals("1"))
+                        {
+                            head = findViewById(R.id.head);
+                            head.setVisibility(View.VISIBLE);
+                        }
+                        else if(dataSnapshot.getValue().toString().equals("2"))
+                        {
+                            body = findViewById(R.id.body);
+                            body.setVisibility(View.VISIBLE);
+                        }
+                        else if(dataSnapshot.getValue().toString().equals("3"))
+                        {
+                            righthand = findViewById(R.id.righthand);
+                            righthand.setVisibility(View.VISIBLE);
+                        }
+                        else if(dataSnapshot.getValue().toString().equals("4"))
+                        {
+                            rightleg = findViewById(R.id.rightleg);
+                            rightleg.setVisibility(View.VISIBLE);
+                        }
+                        else if(dataSnapshot.getValue().toString().equals("5"))
+                        {
+                            lefthand = findViewById(R.id.lefthand);
+                            lefthand.setVisibility(View.VISIBLE);
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -385,32 +436,27 @@ public class HangmanGameOnline extends AppCompatActivity {
                         }
                         if (f == 0)
                         {
-                            rope = findViewById(R.id.rope);
-                            rope.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(0);
                             f++;
                         }
                         else if (f == 1)
                         {
-                            head = findViewById(R.id.head);
-                            head.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(1);
                             f++;
                         }
                         else if (f == 2)
                         {
-                            body = findViewById(R.id.body);
-                            body.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(2);
                             f++;
                         }
                         else if (f == 3)
                         {
-                            righthand = findViewById(R.id.righthand);
-                            righthand.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(3);
                             f++;
                         }
                         else if (f == 4)
                         {
-                            rightleg = findViewById(R.id.rightleg);
-                            rightleg.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(4);
                             hintTextView=findViewById(R.id.hintTextView);
                             if(!hint.equals("null"))
                             {
@@ -422,8 +468,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                         }
                         else if (f == 5)
                         {
-                            lefthand = findViewById(R.id.lefthand);
-                            lefthand.setVisibility(View.VISIBLE);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("hangmanFig").setValue(5);
                             f++;
                         }
                         else
@@ -455,7 +500,6 @@ public class HangmanGameOnline extends AppCompatActivity {
                                     finish();
                                 }
                             });
-                            countDownTimer.cancel();
                         }
                     }
                     else
@@ -479,7 +523,6 @@ public class HangmanGameOnline extends AppCompatActivity {
                                     finish();
                                 }
                             });
-                            countDownTimer.cancel();
                         }
                     }
                 }
@@ -521,6 +564,5 @@ public class HangmanGameOnline extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
 }
 
