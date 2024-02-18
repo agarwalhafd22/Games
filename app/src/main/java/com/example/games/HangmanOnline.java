@@ -114,7 +114,7 @@ public class HangmanOnline extends AppCompatActivity {
                     if(hintEditText.getVisibility()==View.VISIBLE) {
                         hint=hintEditText.getText().toString();
                     }
-                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint);
+                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint, "none", null);
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                     word.setText(null);
                     time1.setText(null);

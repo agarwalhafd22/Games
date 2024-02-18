@@ -2,16 +2,26 @@ package com.example.games;
 
 public class HangmanDB
 {
-    String word, status, time1, time2, hint;
+    String word, status, time1, time2, hint, lettersEnteredAlready, result;
     int playerCount;
 
-    public HangmanDB(String word, String status, int playerCount, String time1, String time2, String hint) {
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public HangmanDB(String word, String status, int playerCount, String time1, String time2, String hint, String lettersEnteredAlready, String result) {
         this.word = word;
         this.status = status;
         this.playerCount=playerCount;
         this.time1=time1;
         this.time2=time2;
         this.hint=hint;
+        this.lettersEnteredAlready=lettersEnteredAlready;
+        this.result=result;
     }
 
     public String getWord() {
@@ -28,6 +38,14 @@ public class HangmanDB
 
     public void setTime1(String time1) {
         this.time1 = time1;
+    }
+
+    public String getLettersEnteredAlready() {
+        return lettersEnteredAlready;
+    }
+
+    public void setLettersEnteredAlready(String lettersEnteredAlready) {
+        this.lettersEnteredAlready = lettersEnteredAlready;
     }
 
     public String getTime2() {

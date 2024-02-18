@@ -44,10 +44,12 @@ public class HangmanGameOnline extends AppCompatActivity {
 
     String result="";
 
-    String word="harsh", time1="00", time2="30", hint="null";
+    String word=null, time1=null, time2=null, hint=null, Code=null, wordOutput=null;
     CountDownTimer countDownTimer;
 
     int f=0;
+
+
 
 
     @Override
@@ -72,10 +74,12 @@ public class HangmanGameOnline extends AppCompatActivity {
         standBase.setVisibility(View.INVISIBLE);
         hintHint.setVisibility(View.INVISIBLE);
 
-
         Intent intent = getIntent();
-        String Code = intent.getStringExtra("Code");
+        Code = intent.getStringExtra("Code");
 
+
+
+        //retrieving data from firebase database
         FirebaseDatabase.getInstance().getReference().child("HangmanDB").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -109,6 +113,8 @@ public class HangmanGameOnline extends AppCompatActivity {
                 enterLetter=findViewById(R.id.enterLetter);
                 reset=findViewById(R.id.reset2);
                 hintHint=findViewById(R.id.hintHint);
+                guessLetter=findViewById(R.id.guessLetter);
+                lettersEntered=findViewById(R.id.lettersEntered);
 
                 progressBar.setVisibility(View.INVISIBLE);
                 timer.setVisibility(View.VISIBLE);
@@ -118,7 +124,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                 standBase.setVisibility(View.VISIBLE);
                 hintHint.setVisibility(View.VISIBLE);
 
-                if(hint.equals("null"))
+                if(hint.isEmpty())
                     hintHint.setText("HINT NOT PROVIDED");
                 else
                     hintHint.setText("HINT PROVIDED");
@@ -131,6 +137,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                 righthand=findViewById(R.id.righthand);
                 rightleg=findViewById(R.id.rightleg);
                 body=findViewById(R.id.body);
+                letters=findViewById(R.id.letters);
 
                 wordShow.setVisibility(View.INVISIBLE);
                 youwon.setVisibility(View.INVISIBLE);
@@ -162,24 +169,128 @@ public class HangmanGameOnline extends AppCompatActivity {
                 }
                 wordShow.setText(result);
 
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("result").setValue(result);
+
                 String timeFinal=time1+":"+time2;
                 timer.setText(timeFinal);
+
+                //starting the game for the both the users when the start button is pressed
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getValue().equals("guessing"))
+                            {
+                                    start.setVisibility(View.INVISIBLE);
+                                    letters.setVisibility(View.VISIBLE);
+                                    guessLetter.setVisibility(View.VISIBLE);
+                                    enterLetter.setVisibility(View.VISIBLE);
+                                    enterLetter.setEnabled(true);
+                                    hintHint.setVisibility(View.INVISIBLE);
+                                    startTimer();
+                            }
+                            else if(dataSnapshot.getValue().equals("Time Up"))
+                            {
+                                timer.setText("00:00");
+                                reset=findViewById(R.id.reset2);
+                                reset.setVisibility(View.VISIBLE);
+                                reset.setEnabled(true);
+                                enterLetter=findViewById(R.id.enterLetter);
+                                enterLetter.setEnabled(false);
+                                enterLetter.setVisibility(View.INVISIBLE);
+                                guessLetter=findViewById(R.id.guessLetter);
+                                guessLetter.setVisibility(View.INVISIBLE);
+                                lettersEntered=findViewById(R.id.lettersEntered);
+                                lettersEntered.setVisibility(View.INVISIBLE);
+                                letters=findViewById(R.id.letters);
+                                letters.setVisibility(View.INVISIBLE);
+                                Toast.makeText(HangmanGameOnline.this, "Time Up!", Toast.LENGTH_SHORT).show();
+                                hideKeyboard();
+                            }
+                            else if(dataSnapshot.getValue().equals("Game Over"))
+                            {
+                                hideKeyboard();
+                                guessLetter=findViewById(R.id.guessLetter);
+                                guessLetter.setVisibility(View.INVISIBLE);
+                                enterLetter.setEnabled(false);
+                                lettersEntered=findViewById(R.id.lettersEntered);
+                                lettersEntered.setVisibility(View.INVISIBLE);
+                                letters=findViewById(R.id.letters);
+                                letters.setVisibility(View.INVISIBLE);
+                                enterLetter.setVisibility(View.INVISIBLE);
+                                hintTextView=findViewById(R.id.hintTextView);
+                                hintTextView.setVisibility(View.INVISIBLE);
+                                leftleg = findViewById(R.id.leftleg);
+                                leftleg.setVisibility(View.VISIBLE);
+                                youlost = findViewById(R.id.youlost);
+                                youlost.setVisibility(View.VISIBLE);
+                                reset = findViewById(R.id.reset2);
+                                reset.setVisibility(View.VISIBLE);
+                                reset.setEnabled(true);
+                                countDownTimer.cancel();
+                            }
+                            else if(dataSnapshot.getValue().toString().equals("Won"))
+                            {
+                                hideKeyboard();
+                                guessLetter=findViewById(R.id.guessLetter);
+                                guessLetter.setVisibility(View.INVISIBLE);
+                                lettersEntered=findViewById(R.id.lettersEntered);
+                                lettersEntered.setVisibility(View.INVISIBLE);
+                                letters=findViewById(R.id.letters);
+                                letters.setVisibility(View.INVISIBLE);
+                                enterLetter.setEnabled(false);
+                                enterLetter.setVisibility(View.INVISIBLE);
+                                hintTextView = findViewById(R.id.hintTextView);
+                                hintTextView.setVisibility(View.INVISIBLE);
+                                youwon = findViewById(R.id.youwon);
+                                youwon.setVisibility(View.VISIBLE);
+                                reset.setVisibility(View.VISIBLE);
+                                reset.setEnabled(true);
+                                countDownTimer.cancel();
+                            }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                //changing the wordShow
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("result").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        wordShow.setText(dataSnapshot.getValue().toString());
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                //changing the lettersEntered
+
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("lettersEnteredAlready").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        lettersEntered.setText(dataSnapshot.getValue().toString());
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
                 start.setOnClickListener(new View.OnClickListener() {               //starting the game
                     @Override
                     public void onClick(View v) {
-                        startTimer(time1, time2, word, hint);
+                        FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").setValue("guessing");
                     }
                 });
 
             }
         }, 2000);
-
-
-
     }
 
-    private void startTimer(String time1, String time2, String word, String hint)
+    private void startTimer()
     {
 
         wordShow=findViewById(R.id.wordShow);
@@ -206,21 +317,7 @@ public class HangmanGameOnline extends AppCompatActivity {
 
             @Override
             public void onFinish() {                                    // timer has run down
-                timer.setText("00:00");
-                reset=findViewById(R.id.reset2);
-                reset.setVisibility(View.VISIBLE);
-                reset.setEnabled(true);
-                enterLetter=findViewById(R.id.enterLetter);
-                enterLetter.setEnabled(false);
-                enterLetter.setVisibility(View.INVISIBLE);
-                guessLetter=findViewById(R.id.guessLetter);
-                guessLetter.setVisibility(View.INVISIBLE);
-                lettersEntered=findViewById(R.id.lettersEntered);
-                lettersEntered.setVisibility(View.INVISIBLE);
-                letters=findViewById(R.id.letters);
-                letters.setVisibility(View.INVISIBLE);
-                Toast.makeText(HangmanGameOnline.this, "Time Up!", Toast.LENGTH_SHORT).show();
-                hideKeyboard();
+                FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").setValue("Time Up");
                 hintTextView=findViewById(R.id.hintTextView);
                 if(hintTextView.getVisibility()==View.VISIBLE)
                     hintTextView.setVisibility(View.INVISIBLE);
@@ -257,17 +354,7 @@ public class HangmanGameOnline extends AppCompatActivity {
         };
 
         countDownTimer.start();
-        start=findViewById(R.id.start);
-        start.setVisibility(View.INVISIBLE);
-        start.setEnabled(false);
-        letters=findViewById(R.id.letters);
-        letters.setVisibility(View.VISIBLE);
-        guessLetter=findViewById(R.id.guessLetter);
-        guessLetter.setVisibility(View.VISIBLE);
         char resultArray[]=result.toCharArray();
-        enterLetter=findViewById(R.id.enterLetter);
-        enterLetter.setVisibility(View.VISIBLE);
-        enterLetter.setEnabled(true);
         int e=0;
         enterLetter.setOnClickListener(new View.OnClickListener()
         {                                                                   // enter button is clicked and the letter guessed is taken as input
@@ -294,7 +381,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                     {
                         if(showLetters.indexOf(c[0])==-1) {
                             showLetters = showLetters + c[0];
-                            lettersEntered.setText(showLetters);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("lettersEnteredAlready").setValue(showLetters);
                         }
                         if (f == 0)
                         {
@@ -341,24 +428,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                         }
                         else
                         {                                                          //game over by wrong guesses, showing "you lost" and revealing the reset button
-                            hideKeyboard();
-                            guessLetter=findViewById(R.id.guessLetter);
-                            guessLetter.setVisibility(View.INVISIBLE);
-                            enterLetter.setEnabled(false);
-                            lettersEntered=findViewById(R.id.lettersEntered);
-                            lettersEntered.setVisibility(View.INVISIBLE);
-                            letters=findViewById(R.id.letters);
-                            letters.setVisibility(View.INVISIBLE);
-                            enterLetter.setVisibility(View.INVISIBLE);
-                            hintTextView=findViewById(R.id.hintTextView);
-                            hintTextView.setVisibility(View.INVISIBLE);
-                            leftleg = findViewById(R.id.leftleg);
-                            leftleg.setVisibility(View.VISIBLE);
-                            youlost = findViewById(R.id.youlost);
-                            youlost.setVisibility(View.VISIBLE);
-                            reset = findViewById(R.id.reset2);
-                            reset.setVisibility(View.VISIBLE);
-                            reset.setEnabled(true);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").setValue("Game Over");
                             int changeColour[]=new int[word.length()];
                             int s=0;
                             int color = Color.RED;
@@ -391,7 +461,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                     else
                     {
                         result = new String(resultArray);
-                        wordShow.setText(result);
+                        FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("result").setValue(result);
                         int d = 0;
                         for (int i = 0; i < result.length(); i++)                   //checking for number of dashes
                         {
@@ -400,21 +470,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                         }
                         if (d == result.length())                       // if no dashes are present in the result array, you won the game
                         {
-                            hideKeyboard();
-                            guessLetter=findViewById(R.id.guessLetter);
-                            guessLetter.setVisibility(View.INVISIBLE);
-                            lettersEntered=findViewById(R.id.lettersEntered);
-                            lettersEntered.setVisibility(View.INVISIBLE);
-                            letters=findViewById(R.id.letters);
-                            letters.setVisibility(View.INVISIBLE);
-                            enterLetter.setEnabled(false);
-                            enterLetter.setVisibility(View.INVISIBLE);
-                            hintTextView = findViewById(R.id.hintTextView);
-                            hintTextView.setVisibility(View.INVISIBLE);
-                            youwon = findViewById(R.id.youwon);
-                            youwon.setVisibility(View.VISIBLE);
-                            reset.setVisibility(View.VISIBLE);
-                            reset.setEnabled(true);
+                            FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("status").setValue("Won");
                             reset.setOnClickListener(new View.OnClickListener() {            //reset button revealed, it now takes to previous activity
                                 @Override
                                 public void onClick(View view) {
@@ -454,6 +510,8 @@ public class HangmanGameOnline extends AppCompatActivity {
 //    {
 //        FirebaseDatabase.getInstance().getReference().child("codes").child(Code).push().setValue()
 //    }
+
+
 
     private void hideKeyboard()
     {

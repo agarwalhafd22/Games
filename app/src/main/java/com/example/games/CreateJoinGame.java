@@ -58,7 +58,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                 }
                             }
                             if(flag1!=1) {
-                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", "null");
+                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null);
                                 FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                                 accepted(Code);
                             }
@@ -102,6 +102,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                             cardView2.setVisibility(View.VISIBLE);
                                         } else {
                                             Intent intent = new Intent(CreateJoinGame.this, HangmanGameOnline.class);
+                                            intent.putExtra("Code", Code);
                                             startActivity(intent);
                                         }
                                     }
