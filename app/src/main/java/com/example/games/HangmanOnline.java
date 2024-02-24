@@ -104,7 +104,7 @@ public class HangmanOnline extends AppCompatActivity {
                 wordHangman=wordHangman.trim();
                 String timeOne=time1.getText().toString();
                 String timeTwo=time2.getText().toString();
-                String hint="null";
+                String hint=null;
 
                 if(wordHangman.isEmpty()||timeOne.isEmpty()||timeTwo.isEmpty()||hintEditText.getVisibility()==View.VISIBLE&&hintEditText.getText().toString().isEmpty())
                     Toast.makeText(HangmanOnline.this, "Enter all fields", Toast.LENGTH_SHORT).show();
@@ -114,7 +114,7 @@ public class HangmanOnline extends AppCompatActivity {
                     if(hintEditText.getVisibility()==View.VISIBLE) {
                         hint=hintEditText.getText().toString();
                     }
-                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint, "none", null, "-1");
+                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint, "none", null, "-1", 1);
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                     word.setText(null);
                     time1.setText(null);

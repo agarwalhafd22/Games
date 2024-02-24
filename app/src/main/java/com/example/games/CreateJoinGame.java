@@ -28,6 +28,10 @@ public class CreateJoinGame extends AppCompatActivity {
     int flag1=0;
     int flag2=0;
 
+    int joinStarted=0;
+
+    int player=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +62,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                 }
                             }
                             if(flag1!=1) {
-                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null, "-1");
+                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null, "-1", 1);
                                 FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                                 accepted(Code);
                             }
@@ -73,7 +77,7 @@ public class CreateJoinGame extends AppCompatActivity {
                 }
             }
         });
-
+        
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +85,22 @@ public class CreateJoinGame extends AppCompatActivity {
                 hideKeyboard();
                 Code = code.getText().toString();
                 if (!Code.isEmpty()) {
+
+                    FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("playerCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.getValue().toString().equals("2"))
+                            {
+                                Toast.makeText(CreateJoinGame.this, "Max players reached!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,22 +110,25 @@ public class CreateJoinGame extends AppCompatActivity {
                                 if(snapshot.getKey().equals(Code))
                                 {
                                     flag2=1;
-                                    if(snapshot.child("playerCount").getValue().toString().equals("2"))
-                                    {
-                                        Toast.makeText(CreateJoinGame.this, "Max players reached!", Toast.LENGTH_SHORT).show();
+                                    if(player==2) {
                                         return;
                                     }
-                                    else {
+                                    if(snapshot.child("playerCount").getValue().toString().equals("2"))
+                                    {
+                                        return;
+                                    }
                                         FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).child("playerCount").setValue(2);
                                         if (snapshot.child("status").getValue().toString().equals("waiting")) {
                                             cardView.setVisibility(View.INVISIBLE);
                                             cardView2.setVisibility(View.VISIBLE);
                                         } else {
+                                            player=2;
                                             Intent intent = new Intent(CreateJoinGame.this, HangmanGameOnline.class);
                                             intent.putExtra("Code", Code);
+                                            intent.putExtra("user","0");
                                             startActivity(intent);
                                         }
-                                    }
+
                                     break;
                                 }
                             }
@@ -132,6 +155,7 @@ public class CreateJoinGame extends AppCompatActivity {
     {
         Intent intent =new Intent(CreateJoinGame.this, HangmanOnline.class);
         intent.putExtra("Code", Code);
+        intent.putExtra("userIntent", "1");
         startActivity(intent);
     }
 

@@ -25,14 +25,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import android.os.Handler;
-import android.os.Looper;
-
-
 
 public class HangmanGameOnline extends AppCompatActivity {
 
 
-    int activeUser=1;
+    String userIntent=null, userDatabase=null;
 
 
     private ImageView start, reset, enterLetter, youwon, youlost, rope, lefthand, leftleg, righthand, rightleg, head, body, standPole, standHead, standBase;
@@ -48,9 +45,6 @@ public class HangmanGameOnline extends AppCompatActivity {
     CountDownTimer countDownTimer;
 
     int f=0;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +68,9 @@ public class HangmanGameOnline extends AppCompatActivity {
         standBase.setVisibility(View.INVISIBLE);
         hintHint.setVisibility(View.INVISIBLE);
 
-        Intent intent = getIntent();
+        Intent intent=getIntent();
         Code = intent.getStringExtra("Code");
+        userIntent=intent.getStringExtra("userIntent");
 
 
 
@@ -88,7 +83,9 @@ public class HangmanGameOnline extends AppCompatActivity {
                         word = snapshot.child("word").getValue().toString();
                         time1 = snapshot.child("time1").getValue().toString();
                         time2 = snapshot.child("time2").getValue().toString();
-                        hint = snapshot.child("hint").getValue().toString();
+                        if(snapshot.child("hint").exists())
+                            hint = snapshot.child("hint").getValue().toString();
+                        userDatabase = snapshot.child("activeUser").getValue().toString();
                         break;
                     }
                 }
@@ -124,7 +121,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                 standBase.setVisibility(View.VISIBLE);
                 hintHint.setVisibility(View.VISIBLE);
 
-                if(hint.isEmpty())
+                if(hint==null)
                     hintHint.setText("HINT NOT PROVIDED");
                 else
                     hintHint.setText("HINT PROVIDED");
@@ -186,6 +183,13 @@ public class HangmanGameOnline extends AppCompatActivity {
                                     enterLetter.setVisibility(View.VISIBLE);
                                     enterLetter.setEnabled(true);
                                     hintHint.setVisibility(View.INVISIBLE);
+
+//                                        if (userIntent.equals(userDatabase)) {
+//                                            start.setEnabled(false);
+//                                            guessLetter.setEnabled(false);
+//                                            enterLetter.setEnabled(false);
+//                                        }
+
                                     startTimer();
                             }
                             else if(dataSnapshot.getValue().equals("Time Up"))
