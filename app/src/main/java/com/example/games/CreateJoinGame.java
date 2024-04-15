@@ -62,7 +62,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                 }
                             }
                             if(flag1!=1) {
-                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "none", null, "-1", 1);
+                                HangmanDB hangmanDB = new HangmanDB("null", "waiting", 1, "0", "0", null, "", null, "-1", 1);
                                 FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                                 accepted(Code);
                             }
@@ -77,7 +77,7 @@ public class CreateJoinGame extends AppCompatActivity {
                 }
             }
         });
-        
+
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +95,6 @@ public class CreateJoinGame extends AppCompatActivity {
                                 return;
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -125,7 +124,7 @@ public class CreateJoinGame extends AppCompatActivity {
                                             player=2;
                                             Intent intent = new Intent(CreateJoinGame.this, HangmanGameOnline.class);
                                             intent.putExtra("Code", Code);
-                                            intent.putExtra("user","0");
+                                            intent.putExtra("userIntent",0);
                                             startActivity(intent);
                                         }
 
@@ -155,7 +154,7 @@ public class CreateJoinGame extends AppCompatActivity {
     {
         Intent intent =new Intent(CreateJoinGame.this, HangmanOnline.class);
         intent.putExtra("Code", Code);
-        intent.putExtra("userIntent", "1");
+        intent.putExtra("userIntent", 1);
         startActivity(intent);
     }
 

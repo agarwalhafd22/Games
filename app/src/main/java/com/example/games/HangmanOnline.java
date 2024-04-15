@@ -12,11 +12,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;
-import android.os.Looper;
+
 
 
 import com.google.firebase.database.FirebaseDatabase;
@@ -114,7 +112,7 @@ public class HangmanOnline extends AppCompatActivity {
                     if(hintEditText.getVisibility()==View.VISIBLE) {
                         hint=hintEditText.getText().toString();
                     }
-                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint, "none", null, "-1", 1);
+                    HangmanDB hangmanDB = new HangmanDB(wordHangman,"started", 1, timeOne, timeTwo, hint, "", null, "-1", 1);
                     FirebaseDatabase.getInstance().getReference().child("HangmanDB").child(Code).setValue(hangmanDB);
                     word.setText(null);
                     time1.setText(null);

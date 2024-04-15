@@ -29,7 +29,7 @@ import android.os.Handler;
 public class HangmanGameOnline extends AppCompatActivity {
 
 
-    String userIntent=null, userDatabase=null;
+    int userIntent, userDatabase;
 
 
     private ImageView start, reset, enterLetter, youwon, youlost, rope, lefthand, leftleg, righthand, rightleg, head, body, standPole, standHead, standBase;
@@ -68,9 +68,10 @@ public class HangmanGameOnline extends AppCompatActivity {
         standBase.setVisibility(View.INVISIBLE);
         hintHint.setVisibility(View.INVISIBLE);
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         Code = intent.getStringExtra("Code");
-        userIntent=intent.getStringExtra("userIntent");
+        userIntent = intent.getIntExtra("userIntent", 0);
+
 
 
 
@@ -85,7 +86,7 @@ public class HangmanGameOnline extends AppCompatActivity {
                         time2 = snapshot.child("time2").getValue().toString();
                         if(snapshot.child("hint").exists())
                             hint = snapshot.child("hint").getValue().toString();
-                        userDatabase = snapshot.child("activeUser").getValue().toString();
+                        userDatabase = Integer.parseInt(snapshot.child("activeUser").getValue().toString());
                         break;
                     }
                 }
@@ -184,11 +185,11 @@ public class HangmanGameOnline extends AppCompatActivity {
                                     enterLetter.setEnabled(true);
                                     hintHint.setVisibility(View.INVISIBLE);
 
-//                                        if (userIntent.equals(userDatabase)) {
-//                                            start.setEnabled(false);
-//                                            guessLetter.setEnabled(false);
-//                                            enterLetter.setEnabled(false);
-//                                        }
+                                        if (userIntent==userDatabase) {
+                                            start.setEnabled(false);
+                                            guessLetter.setEnabled(false);
+                                            enterLetter.setEnabled(false);
+                                        }
 
                                     startTimer();
                             }
@@ -286,6 +287,12 @@ public class HangmanGameOnline extends AppCompatActivity {
 
                     }
                 });
+
+                if (userIntent==userDatabase) {
+                    start.setEnabled(false);
+                    guessLetter.setEnabled(false);
+                    enterLetter.setEnabled(false);
+                }
 
                 start.setOnClickListener(new View.OnClickListener() {               //starting the game
                     @Override
